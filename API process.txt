@@ -1,0 +1,20 @@
+1) Get authorization code from authorization page. This is a one time, manual step. 
+Paste the below code in a browser, hit enter then grab the "code" part from the resulting url. 
+
+https://www.strava.com/oauth/authorize?client_id=120778&redirect_uri=http://localhost&response_type=code&scope=activity:read_all
+
+2) Exchange authorization code for access token & refresh token
+
+https://www.strava.com/oauth/token?client_id=120778&client_secret=dfff83ccf27dafd2adae6e59a8b234d2a03fc9c9&code=b490a6abd8797260cc3ec4e3ac6c6b469f821b13&grant_type=authorization_code
+
+3) View your activities using the access token just received
+
+https://www.strava.com/api/v3/athlete/activities?access_token=9f5d9d927d1db829f2c5ac5b71deee794a007a1d
+
+3) Use refresh token to get new access tokens
+
+https://www.strava.com/oauth/token?client_id=120778&client_secret=dfff83ccf27dafd2adae6e59a8b234d2a03fc9c9&refresh_token=e23e0826238dd1a6351fb39ab4a050ca5978af89&grant_type=refresh_token
+
+code=b490a6abd8797260cc3ec4e3ac6c6b469f821b13
+ "refresh_token": "e23e0826238dd1a6351fb39ab4a050ca5978af89",
+  "access_token": "9f5d9d927d1db829f2c5ac5b71deee794a007a1d",

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Run Explorer</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/x-icon" href="/runner.png">
+<script type="module" src="map.js"></script>
+<script type="module" src="polyline.js"></script>
+<!-- Leaflet css and script -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+crossorigin=""/>
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+crossorigin=""></script>
+<!-- <script src="Polyline.encoded.js"></script> -->
+</head>
+<body>
+    <div id="header">
+        <h2>RUN EXPLORER</h2>
+        <img src="logout.svg" alt="">
+    </div>
+    <div id="map"></div>
+    <div id="info_panel" class="">
+        <h3>This Year</h3>
+        <table>
+        <tr>
+            <td>
+            <span class="title">No of Runs</span>
+            <span class="data_value" id="year_runs"></span>
+            </td>
+            <td>
+            <span class="title">Distance</span>
+            <span class="data_value" id="year_distance"></span>
+            </td>
+            <td>
+            <span class="title">Elevation</span>
+            <span class="data_value" id="year_elev"></span>
+            </td>
+            <td>
+            <span class="title">Active Time</span>
+            <span class="data_value" id="year_time"></span>
+            </td>
+        </tr>
+        </table>
+        <h3>Overall</h3>
+        <table>
+        <tr>
+            <td>
+            <span class="title">No of Runs</span>
+            <span class="data_value" id="total_runs"></span>
+            </td>
+            <td>
+            <span class="title">Distance</span>
+            <span class="data_value" id="total_distance"></span>
+            </td>
+            <td>
+            <span class="title">Elevation</span>
+            <span class="data_value" id="total_elev"></span>
+            </td>
+            <td>
+            <span class="title">Active Time</span>
+            <span class="data_value" id="total_time"></span>
+            </td>
+        </tr>
+
+        </table>
+        <!-- <div id="icon_box"> -->
+        <!-- <span id="refresh_icon">&#8635;</span> -->
+        <span id="duck_icon">&#x00bb;</span>
+        <!-- </div> -->
+    </div>
+</body>
+
+</html>

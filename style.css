@@ -1,0 +1,128 @@
+body{
+    margin : 0;
+    font-family: sans-serif;
+    background-image: url('trail.jpg');
+    background-position: bottom;
+}
+/* -------------------------------Home Page------------------------------------------ */
+#strava_connect_butn{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 250px;
+    height: 50px;
+    background-color: #ff4400;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 3px 3px 9px 1px #0005;
+    cursor: pointer;
+}
+/* ----------------------------Map Page-------------------------------- */
+#map { 
+    height: 90vh; 
+    width: 100vw;
+    position : fixed;
+    top : 10vh;
+    left : 0;
+}
+#info_panel{
+    position : fixed;
+    bottom : 0;
+    left : 0;
+    z-index : 1;
+    width : Calc( 100vw - 20px );
+    background-color : #294456;
+    padding : 10px;
+    /* height: 32%; */
+    /* border-radius: 10px 10px 0 0; */
+    transition: translate 1s;
+}
+#info_panel.duck{
+    translate: 0 185px;
+}
+#info_panel.duck #duck_icon{
+    rotate: 270deg;
+    top:15px;
+}
+
+#info_panel h3 {
+    margin: 8px 20%;
+    color: white;
+    text-align: center;
+    background: #1135;
+    display: inherit;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+#icon_box{
+    position:relative;
+}
+
+#duck_icon{
+    transition: rotate .5s;
+    color: white;
+    cursor: pointer ;
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    scale: 2.2 2;
+    rotate : 90deg;
+}
+
+#refresh_icon{
+    rotate: 140deg;
+    transition: rotate .5s;
+    color: white;
+    cursor: pointer ;
+    position: absolute;
+    right: 25px;
+    top: 15px;
+    scale: 1.75;
+    font-weight: bolder;
+}
+#refresh_icon:active {
+    rotate: 300deg;
+}
+#refresh_icon:hover,#duck_icon:hover{
+    color: #ff4400;
+}
+
+table{
+    width: Calc(100% - 60px);
+    /* height: Calc(100% - 20px); */
+    margin: 10px 30px;
+}
+td{
+    text-align: center;
+}
+.title{
+    color: white;
+    display: block;
+}
+.data_value{
+    color: #ff4400;
+    font-weight: bolder;
+    font-size: 2rem;
+}
+
+#header{
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #294456;
+    border-radius: 0 0 5px 5px;
+    padding: 0 20px;
+}
+#header h2{
+    color: white;
+}
+#header img{
+    width: 40px;
+    cursor: pointer;
+}
