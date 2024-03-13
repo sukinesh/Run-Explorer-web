@@ -23,11 +23,11 @@ body{
 }
 /* ----------------------------Map Page-------------------------------- */
 #map { 
-    height: 90vh; 
+    height: calc(100vh - 4rem);
     width: 100vw;
-    position : fixed;
-    top : 10vh;
-    left : 0;
+    position: fixed;
+    top: 4rem;
+    left: 0;
 }
 #info_panel{
     position : fixed;
@@ -47,6 +47,13 @@ body{
 #info_panel.duck #duck_icon{
     rotate: 270deg;
     top:15px;
+}
+#info_panel>h3:nth-child(1)::after{
+    content: "This Year";
+}
+
+#info_panel.duck>h3:nth-child(1)::after{
+    content: "Aggregate";
 }
 
 #info_panel h3 {
@@ -111,7 +118,7 @@ td{
 }
 
 #header{
-    height: 10vh;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: space-between;

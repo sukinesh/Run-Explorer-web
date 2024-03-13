@@ -1,4 +1,5 @@
-var map = L.map('map').setView([14.12, 74.50], 11);
+var map = L.map('map').setView([13, 76], 5);
+window.map = map;
 
 //OpenStreet Map
 // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -16,10 +17,7 @@ attribution: 'Map data © Google'
 
 
 document.getElementById('duck_icon').addEventListener('click',()=>{
-if(document.getElementById('info_panel').getAttribute('class') == '')
-    document.getElementById('info_panel').setAttribute('class','duck');
-else
-    document.getElementById('info_panel').setAttribute('class','');
+    document.getElementById('info_panel').classList.toggle('duck') 
 });
 
 
@@ -49,13 +47,15 @@ else
 
 function getActivities(access_token)
 {
+    let coordinatesArray = [];
     let Year = {count :0,distance : 0 , elevation : 0 , time : 0 }
     let All  = {count :0,distance : 0 , elevation : 0 , time : 0 }
     // Handle the JSON data
     const activity_url = `https://www.strava.com/api/v3/athlete/activities?per_page=200&access_token=${access_token}`
     fetch(activity_url).then(response=>{
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            getNewAccessToken();
+            throw new Error('Network response was not ok - '+response.status);
             }
             // Parse the response as JSON
             return response.json();
@@ -81,10 +81,19 @@ function getActivities(access_token)
 
 
                 // console.log(date);
-                const polyline = activity.map.summary_polyline
-                var coordinates = L.Polyline.fromEncoded(polyline).getLatLngs()
-                L.polyline(coordinates, { color:"#ff4400", weight:6.5, opacity:.6, lineJoin:'round' }).addTo(map)
+                const polyline = activity.map.summary_polyline;
+                var coordinates = L.Polyline.fromEncoded(polyline).getLatLngs();
+                L.polyline(coordinates, { color:"#ff4400", weight:6.5, opacity:.6, lineJoin:'round' }).addTo(map);
+                coordinatesArray.push(coordinates);
+                // console.log(activity.name); 
+                // if(coordinates.length > 0 )
+                // {
+                //     console.log(coordinates);
+                //     console.log(coordinates[0].lat,coordinates[0].lng);
+                //     map.setView([coordinates[0].lat,coordinates[0].lng],10);
+                // }
             }
+
         })
         Year.distance = parseFloat((Year.distance/1000).toFixed(2));
         All.distance  = parseFloat((All.distance/1000).toFixed(2));
@@ -102,9 +111,37 @@ function getActivities(access_token)
         document.getElementById('year_distance').innerText =  Year.distance+'km';
         document.getElementById('year_elev').innerText = Year.elevation+'m'; 
         document.getElementById('year_time').innerText = Math.floor(Year.time/3600) +":"+ Math.floor((Year.time%3600)/60);
+    }).then(()=> {
+        console.log(coordinatesArray);
+        map.setView([coordinatesArray[0][0].lat,coordinatesArray[0][0].lng],10);
+    });
+}
+
+function getNewAccessToken()
+{
+    const refreshToken = getCookie('refresh_token');
+    console.log(refreshToken);
+
+    const url = `https://www.strava.com/oauth/token?client_id=120778&client_secret=dfff83ccf27dafd2adae6e59a8b234d2a03fc9c9&refresh_token=${refreshToken}&grant_type=refresh_token`;
+    // console.log(url);
+    fetch(url,{ method: "POST"})
+    .then(response => {
+        // Check if the request was successful (status code 200)
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        // Parse the response as JSON
+        return response.json();
     })
-
-
+    .then(data => {
+        console.log(data);
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        console.log(`access_token=${data.access_token};refresh_token=${data.refresh_token}`);
+        document.cookie = `access_token=${data.access_token}; expires=${expirationDate.toUTCString()}; path=/`
+        // document.cookie = `refresh_token=${data.refresh_token}; expires=${expirationDate.toUTCString()}; path=/`
+        location.reload();
+    })
 }
 
 function deleteCookies()
@@ -119,7 +156,7 @@ function deleteCookies()
     }
 
 }
-
+//logout
 document.querySelector("#header img").addEventListener('click',()=>{
     deleteCookies();
     location.reload();
