@@ -5,6 +5,7 @@
 <title>Run Explorer</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/x-icon" href="/runner.png">
+<script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 <script type="module" src="map.js"></script>
 <script type="module" src="polyline.js"></script>
 <!-- Leaflet css and script -->
@@ -71,6 +72,10 @@ crossorigin=""></script>
         <!-- <span id="refresh_icon">&#8635;</span> -->
         <span id="duck_icon">&#x00bb;</span>
         <!-- </div> -->
+    </div>
+    <div id="urd_panel" style="display: none;">
+        <span class="title">URD(km)</span>
+        <span class="data_value" id="urd_value">00</span>
     </div>
 </body>
 

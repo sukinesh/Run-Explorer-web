@@ -39,7 +39,7 @@ function getCookie(cname) {
 }
 
 const access_token = getCookie('access_token');
-console.log(access_token);
+// console.log(access_token);
 if(access_token != undefined && access_token != '')
     getActivities(access_token);
 else
@@ -47,7 +47,7 @@ else
 
 function getActivities(access_token)
 {
-    let coordinatesArray = [];
+    let coordinatesArray = [], runsArray = [];
     let Year = {count :0,distance : 0 , elevation : 0 , time : 0 }
     let All  = {count :0,distance : 0 , elevation : 0 , time : 0 }
     // Handle the JSON data
@@ -83,8 +83,9 @@ function getActivities(access_token)
                 // console.log(date);
                 const polyline = activity.map.summary_polyline;
                 var coordinates = L.Polyline.fromEncoded(polyline).getLatLngs();
-                L.polyline(coordinates, { color:"#ff4400", weight:6.5, opacity:.6, lineJoin:'round' }).addTo(map);
-                coordinatesArray.push(coordinates);
+                L.polyline(coordinates, { color:"#ff4400", weight:6.5, opacity:.6, lineJoin:'round' }).addTo(map).bindPopup(`<div class="leaflet_popup">Title: ${activity.name}<br>Distance: ${(activity.distance/1000).toFixed(1)}</div>`);
+                coordinatesArray.push(coordinates.map((co)=>[co.lat,co.lng]));
+                runsArray.push([activity.name,coordinates.length]);
                 // console.log(activity.name); 
                 // if(coordinates.length > 0 )
                 // {
@@ -100,7 +101,7 @@ function getActivities(access_token)
         Year.elevation= parseFloat(Year.elevation.toFixed(2));
         All.elevation = parseFloat(All.elevation.toFixed(2));
 
-        console.log(Year,All);
+        // console.log(Year,All);
         document.getElementById('total_runs').innerText =  All.count;
         document.getElementById('total_distance').innerText =  All.distance+'km';
         document.getElementById('total_elev').innerText = All.elevation+'m'; 
@@ -112,8 +113,9 @@ function getActivities(access_token)
         document.getElementById('year_elev').innerText = Year.elevation+'m'; 
         document.getElementById('year_time').innerText = Math.floor(Year.time/3600) +":"+ Math.floor((Year.time%3600)/60);
     }).then(()=> {
-        console.log(coordinatesArray);
-        map.setView([coordinatesArray[0][0].lat,coordinatesArray[0][0].lng],10);
+        map.setView([coordinatesArray[0][0][0],coordinatesArray[0][0][1]],10);
+        // calculateURD(coordinatesArray,runsArray);
+        // console.log(runsArray);
     });
 }
 
@@ -161,3 +163,96 @@ document.querySelector("#header img").addEventListener('click',()=>{
     deleteCookies();
     location.reload();
 });
+
+
+//Distance calculating tools
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+    return distance;
+}
+
+// Function to convert degrees to radians
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+
+// Function to calculate total distance of a polyline
+function calculateTotalDistance(coordinates) {
+    let totalDistance = 0;
+    for (let i = 1; i < coordinates.length; i++) {
+        totalDistance += calculateDistance(coordinates[i - 1][0] , coordinates[i - 1][1] , coordinates[i][0] , coordinates[i][1]);
+    }
+    return totalDistance;
+}
+
+
+function calculateURD(coordinatesArray,runsArray)
+{
+
+    let urd = 0, turfKm = 0;
+    coordinatesArray.forEach((runCos,index)=>{
+        let distance = calculateTotalDistance(runCos);
+        runsArray[index].push(distance);
+        urd += distance;
+        let turfDistance = 0;
+        if(runCos.length > 0)
+        {
+            let line = turf.lineString(runCos);
+            turfDistance = turf.length(line);
+            turfKm += turfDistance;
+        }
+
+        console.log(index, distance , turfDistance);
+
+    })
+    // console.log(runsArray);
+    document.querySelector("#urd_value").innerText = urd.toFixed(2);
+
+    console.log('urd - '+urd+', turf - '+turfKm);
+
+
+    // console.log(...coordinatesArray);
+    // var collection = turf.featureCollection(...coordinatesArray);
+    // console.log(collection);
+    // // coordinatesArray.forEach((coordinates)=>{
+    // //     if(coordinates.length > 0)
+    // //     {
+    // //         console.log(coordinates.length);
+    // //         const newLineString = turf.lineString(coordinates);
+    // //         multiLine = turf.combine(multiLine,newLineString);
+    // //     }
+    // // });
+    // // multiLine = turf.combine(multiLine,[[1,2,3]]);
+    // let multiLine = turf.combine(collection);
+    // console.log(multiLine);
+    // // Create Turf LineString objects for the polylines
+    // const line1 = turf.lineString(coordinatesArray[0]);
+    // const line2 = turf.lineString(coordinatesArray[1]);
+
+    // // console.log(line1);
+    // // Detect and remove overlapping segments
+    // const nonOverlapping1 = turf.lineOverlap(line1, line2);
+    // const nonOverlapping2 = turf.lineOverlap(line2, line1);
+    // // console.log(nonOverlapping1);
+    // // Step 2: Calculate Distance
+
+    // // Calculate distance between non-overlapping segments
+    // const distance1 = turf.length(nonOverlapping1, { units: 'kilometers' });
+    // const distance2 = turf.length(nonOverlapping2, { units: 'kilometers' });
+
+    // // console.log('overlap' + turf.booleanOverlap(line1,line2));
+    // // Total distance between the non-overlapping segments
+    // const totalDistance = distance1 + distance2;
+
+    // // Output the total distance
+    // console.log('Total distance between polylines:', totalDistance);
+
+}
