@@ -1,18 +1,22 @@
 body{
     margin : 0;
     font-family: sans-serif;
-    background-image: url('trail.jpg');
+    background-image: url('assets/trail.jpg');
     background-position: bottom;
 }
+.hidden{
+    display: none!important;
+}
+
 /* -------------------------------Home Page------------------------------------------ */
-#strava_connect_butn{
+
+.center_butn,.loading{
     position: absolute;
     top: 50%;
     left: 50%;
     translate: -50% -50%;
-    width: 250px;
+    width: auto;
     height: 50px;
-    background-color: #ff4400;
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
@@ -20,8 +24,39 @@ body{
     border-radius: 5px;
     box-shadow: 3px 3px 9px 1px #0005;
     cursor: pointer;
+    display: flex;
+    padding-right: 10px;
+    gap: 10px;
 }
+
+.center_butn img{
+    margin: 5px;
+    height: Calc(100% - 20px);
+    float: left;
+    background: white;
+    padding: 5px;
+    border-radius: 2px;
+}
+.center_butn h4{
+    margin: auto;
+}
+#strava_connect_butn{
+    background-color: #f406;
+    
+}
+#signin_butn{
+    background-color: #4285f4;
+}
+
 /* ----------------------------Map Page-------------------------------- */
+
+.loading{
+    width: 200px;
+    background-color: #0009;
+    padding: 20px;
+    height: unset;
+}
+
 #map { 
     height: calc(100vh - 4rem);
     width: 100vw;

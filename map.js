@@ -1,3 +1,5 @@
+import { logOut } from "./firebase.js";
+
 var map = L.map('map').setView([13, 76], 5);
 window.map = map;
 
@@ -14,12 +16,9 @@ attribution: 'Map data © Google'
 }).addTo(map);
 
 
-
-
 document.getElementById('duck_icon').addEventListener('click',()=>{
     document.getElementById('info_panel').classList.toggle('duck') 
 });
-
 
 
 function getCookie(cname) {
@@ -54,8 +53,12 @@ function getActivities(access_token)
     const activity_url = `https://www.strava.com/api/v3/athlete/activities?per_page=200&access_token=${access_token}`
     fetch(activity_url).then(response=>{
         if (!response.ok) {
-            getNewAccessToken();
-            throw new Error('Network response was not ok - '+response.status);
+            // getNewAccessToken();
+
+                console.log('Network response was not ok - '+response.status);
+                deleteCookies();
+                location.href("../home.html");
+
             }
             // Parse the response as JSON
             return response.json();
@@ -116,34 +119,8 @@ function getActivities(access_token)
         map.setView([coordinatesArray[0][0][0],coordinatesArray[0][0][1]],10);
         // calculateURD(coordinatesArray,runsArray);
         // console.log(runsArray);
+        document.querySelector('.loading').classList.toggle('hidden');   
     });
-}
-
-function getNewAccessToken()
-{
-    const refreshToken = getCookie('refresh_token');
-    console.log(refreshToken);
-
-    const url = `https://www.strava.com/oauth/token?client_id=120778&client_secret=dfff83ccf27dafd2adae6e59a8b234d2a03fc9c9&refresh_token=${refreshToken}&grant_type=refresh_token`;
-    // console.log(url);
-    fetch(url,{ method: "POST"})
-    .then(response => {
-        // Check if the request was successful (status code 200)
-        if (!response.ok) {
-        throw new Error('Network response was not ok');
-        }
-        // Parse the response as JSON
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 30);
-        console.log(`access_token=${data.access_token};refresh_token=${data.refresh_token}`);
-        document.cookie = `access_token=${data.access_token}; expires=${expirationDate.toUTCString()}; path=/`
-        // document.cookie = `refresh_token=${data.refresh_token}; expires=${expirationDate.toUTCString()}; path=/`
-        location.reload();
-    })
 }
 
 function deleteCookies()
@@ -153,17 +130,24 @@ function deleteCookies()
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i];
         const eqPos = cookie.indexOf('=');
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
         document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     }
 
 }
 //logout
 document.querySelector("#header img").addEventListener('click',()=>{
-    deleteCookies();
-    location.reload();
+    const result = confirm('Are you sure, You want to Logout?');
+    if(result)
+    {
+        deleteCookies();
+        logOut();
+        location.reload();
+    }
 });
 
+
+// -----------------------------------------------------------------------------------------------------------
 
 //Distance calculating tools
 function calculateDistance(lat1, lon1, lat2, lon2) {
