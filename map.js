@@ -57,7 +57,7 @@ function getActivities(access_token)
 
                 console.log('Network response was not ok - '+response.status);
                 deleteCookies();
-                location.href("../home.html");
+                location.href = "../home.html";
 
             }
             // Parse the response as JSON
