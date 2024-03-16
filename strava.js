@@ -40,12 +40,16 @@ else
     .catch((err)=>{
 
         console.log(err);
-        const stravaButton = document.querySelector('#strava_connect_butn');
-        stravaButton.disabled = false;
-        stravaButton.querySelector("h4").innerText = 'Connect with STRAVA';
-        stravaButton.style.backgroundColor = "#f40";
-
+        prepForStravaAuth();
     } );
+}
+
+function prepForStravaAuth()
+{
+    const stravaButton = document.querySelector('#strava_connect_butn');
+    stravaButton.disabled = false;
+    stravaButton.querySelector("h4").innerText = 'Connect with STRAVA';
+    stravaButton.style.backgroundColor = "#f40";
 }
 
 function getNewAccessToken(refreshToken)
@@ -57,7 +61,8 @@ function getNewAccessToken(refreshToken)
     .then(response => {
         // Check if the request was successful (status code 200)
         if (!response.ok) {
-        throw new Error('Network response was not ok');
+            prepForStravaAuth();
+            throw new Error('Network response was not ok');
         }
         // Parse the response as JSON
         return response.json();
